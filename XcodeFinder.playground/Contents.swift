@@ -17,17 +17,17 @@ class XcodeFinder {
 
         do {
             let appFolderContent = try fileManager.contentsOfDirectoryAtPath(applicationPath)
-            //TODO: Map directly the filtered array to paths
-            let xcodeApps = appFolderContent.filter{$0.containsString("Xcode")}
-            if (xcodeApps.count == 0) {
+            let xcodePaths = appFolderContent.filter{$0.containsString("Xcode")}.map({ app in
+                return applicationPath+"/"+app
+            })
+            if (xcodePaths.count == 0) {
                 print("No Xcode-named Apps found in the \(applicationPath) folder")
                 return nil
             }
 
             //TODO: Can we do better than a mutable var?
             var result = Dictionary<String,String>()
-            for xcode in xcodeApps {
-                let path = applicationPath+"/"+xcode
+            for path in xcodePaths {
                 if let version = versionForXcodeApp(path) {
                     result[version] = path
                 }
@@ -49,7 +49,7 @@ class XcodeFinder {
 
         //TODO: Check if we can have a double guard condition
         guard let infoDict = NSDictionary(contentsOfFile: infoPlistPath) else {
-            print("Cannot find Info.plist for this dict")
+            print("Cannot find Info.plist for this dict. Path : \(infoPlistPath)")
             return nil
         }
         guard let version = infoDict["CFBundleShortVersionString"] as? String else {
