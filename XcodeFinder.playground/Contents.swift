@@ -17,9 +17,7 @@ class XcodeFinder {
 
         do {
             let appFolderContent = try fileManager.contentsOfDirectoryAtPath(applicationPath)
-            let xcodePaths = appFolderContent.filter{$0.containsString("Xcode")}.map({ app in
-                return applicationPath+"/"+app
-            })
+            let xcodePaths = appFolderContent.filter{$0.containsString("Xcode")}.map{applicationPath+"/"+$0}
             if (xcodePaths.count == 0) {
                 print("No Xcode-named Apps found in the \(applicationPath) folder")
                 return nil
