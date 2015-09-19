@@ -39,6 +39,14 @@ class XcodeFinder {
         }
     }
 
+    func developerFolder(xcodePath path: String) -> String? {
+        let developerFolderPath = path+"/Contents/Developer"
+        if fileManager.fileExistsAtPath(developerFolderPath) {
+            return developerFolderPath
+        }
+        return nil
+    }
+
     //MARK: - Private
 
     private func versionForXcodeApp(path: String) -> String? {
@@ -62,6 +70,16 @@ class XcodeFinder {
 let finder = XcodeFinder()
 if let xcodes = finder.findInstalledXcodeApps() {
     print(xcodes)
+    if let path64 = xcodes["6.4"],
+        developerPath = finder.developerFolder(xcodePath: path64) {
+        print (developerPath)
+    }
+
+    if let path70 = xcodes["7.0"],
+        developerPath = finder.developerFolder(xcodePath: path70) {
+        print (developerPath)
+    }
 }
+
 
 
