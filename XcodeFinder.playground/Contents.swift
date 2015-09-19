@@ -6,6 +6,11 @@ class XcodeFinder {
 
     let fileManager = NSFileManager.defaultManager()
 
+    enum AppInternalStructure : String {
+        case InfoPlist = "Contents/Info.plist"
+        case DeveloperFolder = "Contents/Developer"
+    }
+
     //MARK: - Public
 
     func findInstalledXcodeApps() -> [String : String]? {
@@ -40,7 +45,7 @@ class XcodeFinder {
     }
 
     func developerFolder(xcodePath path: String) -> String? {
-        let developerFolderPath = path+"/Contents/Developer"
+        let developerFolderPath = (path as NSString).stringByAppendingPathComponent(AppInternalStructure.DeveloperFolder.rawValue)
         if fileManager.fileExistsAtPath(developerFolderPath) {
             return developerFolderPath
         }
@@ -50,9 +55,7 @@ class XcodeFinder {
     //MARK: - Private
 
     private func versionForXcodeApp(path: String) -> String? {
-        //TODO: Create a private enum for those internal paths
-        let infoPlistPath = path+"/Contents/Info.plist"
-
+        let infoPlistPath = (path as NSString).stringByAppendingPathComponent(AppInternalStructure.InfoPlist.rawValue)
         //TODO: Check if we can have a double guard condition
         guard let infoDict = NSDictionary(contentsOfFile: infoPlistPath) else {
             print("Cannot find Info.plist for this dict. Path : \(infoPlistPath)")
